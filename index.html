@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmoothShare</title>
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="./vendor/peerjs.min.js"></script>
+    <script defer src="./js/index.js"></script>
+    <script defer src="./js/p2p_logic.js"></script>
+</head>
+
+<body>
+    <div class="background-wrapper">
+        <div class="app-container"><!-- Header -->
+            <div class="card">
+                <header class="header">
+                    <h1 class="title">SmoothShare</h1>
+                    <p class="subtitle">Share files directly between browsers</p>
+                </header><!-- File Selection Section -->
+                <section>
+                    <h2 class="section-title"><span class="section-icon">🧑</span>Profile</h2>
+                    <div class="connection-info"><label for="myPeerIdDisplay" class="connection-label">Your Peer ID
+                            (share with others)</label>
+                        <div class="peer-id-container">
+                            <div class="peer-id-display" id="myPeerIdDisplay">
+                                Initializing...
+                            </div><button class="btn btn-primary btn-icon" id="copyPeerIdBtn" disabled>📋 Copy</button>
+                        </div>
+                    </div>
+                    <h2 class="section-title"><span class="section-icon">📁</span>File List</h2>
+                    <div id="fileList" class="file-list">
+                        <div class="empty-state">
+                            No files selected. Click below to add files to share.
+                        </div>
+                    </div><label for="fileInput" class="file-input-label">
+                        <div class="icon">
+                            ➕
+                        </div>
+                        <div style="font-size: 14px; font-weight: 600; color: #2d3748;">
+                            Add Files to Share
+                        </div>
+                        <div style="font-size: 12px; color: #718096; margin-top: 4px;">
+                            Click to select one or multiple files
+                        </div>
+                    </label> <input type="file" id="fileInput" class="file-input" multiple>
+                </section>
+            </div><!-- Connection Section -->
+            <div class="card">
+                <section>
+                    <h2 class="section-title"><span class="section-icon">🔗</span> Connection</h2>
+                    <div class="connection-info"><label for="remotePeerIdInput" class="connection-label">Connect to a
+                            Remote Peer</label>
+                        <div class="input-group"><input type="text" id="remotePeerIdInput" class="peer-input"
+                                placeholder="Enter peer ID to connect">
+                            <button class="btn btn-primary" id="connectBtn" disabled>Add Connection</button>
+                        </div>
+                    </div>
+                    <div id="connectionsList" class="connections-list empty-state">No added connections</div>
+                </section>
+            </div><!-- Transfer Progress Sections -->
+            <div class="transfers-grid"><!-- Sending Section -->
+                <div class="card">
+                    <section>
+                        <h2 class="section-title"><span class="section-icon">📤</span> Sending</h2>
+                        <div id="sendingTransfers" class="transfer-list">
+                            <div class="empty-state">
+                                <div class="icon">📭</div>
+                                No active sending transfers
+                            </div>
+                        </div>
+                    </section>
+                </div><!-- Receiving Section -->
+                <div class="card">
+                    <section>
+                        <h2 class="section-title"><span class="section-icon">📥</span> Receiving</h2>
+                        <div id="receivingTransfers" class="transfer-list">
+                            <div class="empty-state">
+                                <div class="icon">📭</div>
+                                No active receiving transfers
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+</body>
+
+</html>
