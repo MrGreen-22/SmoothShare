@@ -1,15 +1,47 @@
 // DOM Elements
-const fileInput = document.getElementById('fileInput');
-const fileList = document.getElementById('fileList');
+const profileIdInput = document.getElementById('profileId');
+const setIdBtn = document.getElementById('setIdBtn');
+const profilePasswordInput = document.getElementById('profilePassword');
+const setPasswordBtn = document.getElementById('setPasswordBtn');
+const removePasswordBtn = document.getElementById('removePasswordBtn');
 const myPeerIdDisplay = document.getElementById('myPeerIdDisplay');
 const copyPeerIdBtn = document.getElementById('copyPeerIdBtn');
+const fileInput = document.getElementById('fileInput');
+const fileList = document.getElementById('fileList');
 const remotePeerIdInput = document.getElementById('remotePeerIdInput');
 const connectBtn = document.getElementById('connectBtn');
 const connectionsListEl = document.getElementById('connectionsList');
 const sendingTransfersEl = document.getElementById('sendingTransfers');
 const receivingTransfersEl = document.getElementById('receivingTransfers');
 
-// Peer Management
+// Profile
+setIdBtn.addEventListener('click', () => {
+    const profileId = profileIdInput.value.trim();
+    profileIdInput.value = '';
+    if (peer) {
+        peer.destroy();
+    }
+    initPeer(profileId.length > 0 ? profileId : null);
+});
+
+setPasswordBtn.addEventListener('click', () => {
+    const password = profilePasswordInput.value;
+    profilePasswordInput.value = '';
+    if (password.length > 0) {
+        profilePassword = password;
+        showToast('✔ New Password set for your profile');
+    }
+    else {
+        showToast('✗ Password cannot be empty');
+    }
+});
+
+removePasswordBtn.addEventListener('click', () => {
+    profilePasswordInput.value = '';
+    profilePassword = '';
+    showToast('✔ Password removed from your profile');
+});
+
 // display user's peer id
 function showMyPeerId() {
     if (!peer || !peer.id) return;
@@ -109,7 +141,7 @@ function handleExistingConn(remotePeerId) {
         showToast('✓ Connection found');
         remotePeerIdInput.value = '';
         // if the connection is not shown in the list, add it to the list
-        const connectionBox = document.querySelector(`[data-peer-id="${remotePeerId}"]`);
+        const connectionBox = document.getElementById(`conn-${remotePeerId}`);
         if (!connectionBox) {
             addConnectionBox(remotePeerId)
         }
@@ -133,10 +165,14 @@ function addConnectionBox(remotePeerId) {
 
     let tempContainer = document.createElement('div');
     tempContainer.innerHTML = (`
-        <div class="connection-box" data-peer-id="${remotePeerId}" style="transition: transform 0.3s;">
+        <div class="connection-box" id="conn-${remotePeerId}" style="transition: transform 0.3s;">
           <div class="connection-box-header">
-            <span class="connection-status-icon"></span>
+
             <div class="connection-peer-id">Peer-ID: ${remotePeerId}</div>
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label class="connection-label" style="font-size: 12px; color: #475569; margin-bottom: 6px;">Password</label>
+            <input type="password" id="conn-password-${remotePeerId}" class="input" placeholder="Enter password for receiving this user's files" style="width: 100%; font-size: 13px; padding: 10px 14px;">
           </div>
           <div class="connection-actions">
             <button class="btn btn-success" onclick="requestFiles('${remotePeerId}', this)">📥 Request Files</button>
@@ -150,7 +186,7 @@ function addConnectionBox(remotePeerId) {
 }
 
 function removeConnectionBox(remotePeerId) {
-    const connectionBox = document.querySelector(`[data-peer-id="${remotePeerId}"]`);
+    const connectionBox = document.getElementById(`conn-${remotePeerId}`);
     if (connectionBox) {
         connectionBox.remove();
     }
@@ -162,7 +198,7 @@ function removeConnectionBox(remotePeerId) {
 
 // Transfer Management
 function enableRequestFilesBtn(remotePeerId) {
-    const connectionBox = document.querySelector(`[data-peer-id="${remotePeerId}"]`);
+    const connectionBox = document.getElementById(`conn-${remotePeerId}`);
     connectionBox.querySelector('.btn-success').disabled = false;
 }
 
@@ -328,8 +364,11 @@ function formatFileSize(bytes) {
 function showStatus(message, type, container) {
     const existing = container.querySelector('.status');
     if (existing) existing.remove();
-
-    container.innerHTML += `<div class="status ${type}">${message}</div>`;
+    const statusDialog = document.createElement('div');
+    statusDialog.className = `status ${type}`;
+    statusDialog.textContent = message;
+    container.append(statusDialog);
+    // container.innerHTML += `<div class="status ${type}">${message}</div>`;
 
     setTimeout(() => {
         const status = container.querySelector('.status');
@@ -342,6 +381,10 @@ function showStatus(message, type, container) {
 function showDownloadDialog(blob, fileMetadata, transferBoxContainer) {
     const url = URL.createObjectURL(blob);
     const message = `<a href="${url}" download="${fileMetadata.name}" style="text-decoration: underline;">Download:</a> ${fileMetadata.name} (${formatFileSize(fileMetadata.size)})`;
-    transferBoxContainer.innerHTML += `<div class="status success">${message}</div>`;
+    const statusDialog = document.createElement('div');
+    statusDialog.classList = 'status success';
+    statusDialog.innerHTML = message;
+    transferBoxContainer.append(statusDialog);
+    // transferBoxContainer.innerHTML += `<div class="status success">${message}</div>`;
 }
 

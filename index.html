@@ -13,22 +13,49 @@
 
 <body>
     <div class="background-wrapper">
-        <div class="app-container"><!-- Header -->
+        <div class="app-container">
+            <!-- Header -->
             <div class="card">
                 <header class="header">
                     <h1 class="title">SmoothShare</h1>
                     <p class="subtitle">Share files directly between browsers</p>
-                </header><!-- File Selection Section -->
-                <section>
+                </header>
+                <!-- Profile Section -->
+                <section style="margin-bottom: 40px;">
                     <h2 class="section-title"><span class="section-icon">🧑</span>Profile</h2>
-                    <div class="connection-info"><label for="myPeerIdDisplay" class="connection-label">Your Peer ID
-                            (share with others)</label>
-                        <div class="peer-id-container">
-                            <div class="peer-id-display" id="myPeerIdDisplay">
-                                Initializing...
-                            </div><button class="btn btn-primary btn-icon" id="copyPeerIdBtn" disabled>📋 Copy</button>
+                    <div style="display: flex; flex-direction: column; gap: 25px;">
+                        <div><label for="profileId" class="connection-label">
+                                ID (If not provided, will be generated automatically)</label>
+                            <input type="text" id="profileId"
+                                placeholder="Must start and end with an alphanumeric character. In the middle spaces, dashes (-) and underscores (_) are allowed"
+                                style="width: 100%;">
+                            <button class="btn btn-primary" id="setIdBtn" style="width: 150px; margin-top: 10px;">Set /
+                                Reset</button>
+                        </div>
+                        <div><label for="profilePassword" class="connection-label">
+                                Password (If you want to limit access to your files)</label> <input type="password"
+                                id="profilePassword" placeholder="Enter a password" style="width: 100%;">
+                            <div class="connection-actions">
+                                <button class="btn btn-primary" style="width: 150px; margin-top: 10px;"
+                                    id="setPasswordBtn"> Set</button>
+                                <button class="btn btn-danger" style="width: 150px; margin-top: 10px;"
+                                    id="removePasswordBtn">Remove</button>
+                            </div>
+                        </div>
+                        <div><label for="myPeerIdDisplay" class="connection-label">Your Peer ID
+                                (share with others)</label>
+                            <div class="peer-id-container">
+                                <div class="peer-id-display" id="myPeerIdDisplay">
+                                    Waiting...
+                                </div><button class="btn btn-primary btn-icon" id="copyPeerIdBtn" disabled>📋
+                                    Copy</button>
+                            </div>
                         </div>
                     </div>
+
+                </section>
+                <!-- File Selection Section -->
+                <section>
                     <h2 class="section-title"><span class="section-icon">📁</span>File List</h2>
                     <div id="fileList" class="file-list">
                         <div class="empty-state">
@@ -46,21 +73,36 @@
                         </div>
                     </label> <input type="file" id="fileInput" class="file-input" multiple>
                 </section>
-            </div><!-- Connection Section -->
+            </div>
+            <!-- Connection Section -->
             <div class="card">
                 <section>
                     <h2 class="section-title"><span class="section-icon">🔗</span> Connection</h2>
                     <div class="connection-info"><label for="remotePeerIdInput" class="connection-label">Connect to a
                             Remote Peer</label>
-                        <div class="input-group"><input type="text" id="remotePeerIdInput" class="peer-input"
+                        <div class="input-group"><input type="text" id="remotePeerIdInput"
                                 placeholder="Enter peer ID to connect">
                             <button class="btn btn-primary" id="connectBtn" disabled>Add Connection</button>
                         </div>
                     </div>
                     <div id="connectionsList" class="connections-list empty-state">No added connections</div>
                 </section>
-            </div><!-- Transfer Progress Sections -->
-            <div class="transfers-grid"><!-- Sending Section -->
+            </div>
+            <!-- Transfer Progress Sections -->
+            <div class="transfers-grid">
+                <!-- Receiving Section -->
+                <div class="card" id="recvCard">
+                    <section>
+                        <h2 class="section-title"><span class="section-icon">📥</span> Receiving</h2>
+                        <div id="receivingTransfers" class="transfer-list">
+                            <div class="empty-state">
+                                <div class="icon">📭</div>
+                                No active receiving transfers
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <!-- Sending Section -->
                 <div class="card">
                     <section>
                         <h2 class="section-title"><span class="section-icon">📤</span> Sending</h2>
@@ -68,17 +110,6 @@
                             <div class="empty-state">
                                 <div class="icon">📭</div>
                                 No active sending transfers
-                            </div>
-                        </div>
-                    </section>
-                </div><!-- Receiving Section -->
-                <div class="card">
-                    <section>
-                        <h2 class="section-title"><span class="section-icon">📥</span> Receiving</h2>
-                        <div id="receivingTransfers" class="transfer-list">
-                            <div class="empty-state">
-                                <div class="icon">📭</div>
-                                No active receiving transfers
                             </div>
                         </div>
                     </section>

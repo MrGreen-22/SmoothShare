@@ -96,6 +96,33 @@ html {
     font-size: 24px;
 }
 
+/* Profile */
+.peer-id-container {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    /* margin-bottom: 16px; */
+}
+
+.peer-id-display {
+    flex: 1;
+    padding: 12px 16px;
+    background: #edf2f7;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    word-break: break-all;
+    border: 1px solid #cbd5e0;
+    display: flex;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .peer-id-display {
+        font-size: 14px;
+    }
+}
+
 /* File Selection Section */
 .file-list {
     display: flex;
@@ -205,32 +232,6 @@ html {
     display: block;
 }
 
-.peer-id-container {
-    display: flex;
-    gap: 8px;
-    align-items: stretch;
-    margin-bottom: 16px;
-}
-
-.peer-id-display {
-    flex: 1;
-    padding: 12px 16px;
-    background: #edf2f7;
-    border-radius: 8px;
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
-    word-break: break-all;
-    border: 1px solid #cbd5e0;
-    display: flex;
-    align-items: center;
-}
-
-@media (min-width: 768px) {
-    .peer-id-display {
-        font-size: 14px;
-    }
-}
-
 .input-group {
     display: flex;
     flex-direction: column;
@@ -244,7 +245,7 @@ html {
     }
 }
 
-.peer-input {
+input {
     flex: 1;
     padding: 12px 16px;
     border: 2px solid #e2e8f0;
@@ -256,13 +257,13 @@ html {
     min-width: 0;
 }
 
-.peer-input:focus {
+input:focus {
     outline: none;
     border-color: #667eea;
 }
 
 @media (min-width: 768px) {
-    .peer-input {
+    input {
         width: auto;
     }
 }
@@ -338,15 +339,17 @@ html {
     padding: 16px;
     background: #f0fdf4;
     border-radius: 12px;
-    border: 2px solid #86efac;
+    border: 2px solid #e2e8f0;
     margin-bottom: 12px;
+    background: #f8fafc;
+    color: #475569;
 }
 
 .connection-box-header {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 20px;
 }
 
 .connection-status-icon {
@@ -356,7 +359,7 @@ html {
 .connection-peer-id {
     font-family: 'Courier New', monospace;
     font-size: 13px;
-    color: #166534;
+    /* color: #166534; */
     font-weight: 600;
     flex: 1;
     word-break: break-all;
@@ -399,6 +402,10 @@ html {
 @media (max-width: 768px) {
     .transfers-grid {
         grid-template-columns: 1fr;
+    }
+
+    #recvCard {
+        margin-bottom: 0px;
     }
 }
 
@@ -494,81 +501,6 @@ html {
     font-size: 11px;
     font-weight: 700;
 }
-
-/* .transfer-box {
-    padding: 16px;
-    background: #f7fafc;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    margin-bottom: 12px;
-}
-
-.transfer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.transfer-peer {
-    font-size: 12px;
-    font-family: 'Courier New', monospace;
-    color: #4a5568;
-    font-weight: 600;
-}
-
-.transfer-status {
-    font-size: 11px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-weight: 600;
-}
-
-.transfer-status.sending {
-    background: #bee3f8;
-    color: #2c5282;
-}
-
-.transfer-status.receiving {
-    background: #bee3f8;
-    color: #2c5282;
-}
-
-.transfer-status.completed {
-    background: #c6f6d5;
-    color: #22543d;
-}
-
-.transfer-file {
-    font-size: 13px;
-    color: #2d3748;
-    font-weight: 600;
-    margin-bottom: 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.progress-bar-container {
-    height: 8px;
-    background: #cbd5e0;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 8px;
-}
-
-.progress-bar {
-    height: 100%;
-    background: #48bb78;
-    width: 0%;
-    transition: width 0.3s;
-}
-
-.progress-text {
-    font-size: 12px;
-    color: #718096;
-    text-align: right;
-} */
 
 /* Utility */
 .status {

@@ -1,7 +1,8 @@
 // Global Vars
 let peer = null;
+let profilePassword = '';
 let sharedFiles = [];
-let connections = new Map(); // peerId -> {connection, receivingData};
+let connections = new Map(); // remotePeerId -> {connection, receivingData};
 const connTypes = Object.freeze({ incoming: 'Incoming', outgoing: 'Outgoing' })
 const dataTypes = Object.freeze({
     getFiles: 'get_files', error: 'error', fileMetadata: 'file_metadata',
@@ -36,9 +37,6 @@ const iceServers = [
 ];
 
 // Main
-// Initialize peer after DOM load
-initPeer();
-
 // Cleanup before page unload
 window.onbeforeunload = () => {
     connections.forEach(conn => conn.close());
@@ -46,8 +44,8 @@ window.onbeforeunload = () => {
 };
 
 // Peer Management
-function initPeer() {
-    peer = new Peer(null, {
+function initPeer(profileId = null) {
+    peer = new Peer(profileId, {
         debug: 2,
         config: { 'iceServers': iceServers }
     });
@@ -57,6 +55,7 @@ function initPeer() {
         console.info('My peer ID: ' + id);
         showMyPeerId();
         showToast('✅ Connected to server');
+        updateConnectButton();
     });
 
     peer.on('disconnected', () => {
@@ -69,11 +68,13 @@ function initPeer() {
     peer.on('error', (err) => {
         console.error(`Peer Error: ${err.type}`);
         showToast(`❌ Error: ${err.type}`);
-        // if error was fatal, reset peer
-        if (peer.destroyed) {
-            showToast('🔄 Fatal error occurred. Reinitializing...');
-            initPeer();
-        }
+    });
+
+    peer.on('close', () => {
+        console.error('Peer was destroyed.');
+        showToast('❗ Peer was destroyed. Try resetting your ID.');
+        connections.clear();
+        // initPeer();
     });
 
     peer.on('connection', (conn) => {
@@ -154,7 +155,9 @@ function requestFiles(remotePeerId, requestFilesBtn) {
     requestFilesBtn.disabled = true;
     removeTransferBox(transferTypes.sending, remotePeerId);
     removeTransferBox(transferTypes.receiving, remotePeerId);
-    connections.get(remotePeerId).connection.send({ type: dataTypes.getFiles });
+    const password = document.getElementById(`conn-password-${remotePeerId}`).value;
+    // send password along with request
+    connections.get(remotePeerId).connection.send({ type: dataTypes.getFiles, password: password });
 }
 
 function handleReceivedData(data, remotePeerId) {
@@ -163,15 +166,22 @@ function handleReceivedData(data, remotePeerId) {
         // Get Files Request
         case dataTypes.getFiles:
             let conn = connData.connection;
+            // verify password
+            if (data.password !== profilePassword) {
+                conn.send({ type: 'error', message: 'Invalid password. Access denied.' });
+                return;
+            }
+            // check if there are files available to share
             if (sharedFiles.length === 0) {
                 conn.send({ type: 'error', message: 'No files available for sharing' });
                 return;
             }
+
             sendFiles(conn, remotePeerId);
             break;
         // Error    
         case dataTypes.error:
-            const connectionBox = document.querySelector(`[data-peer-id="${remotePeerId}"]`);
+            const connectionBox = document.getElementById(`conn-${remotePeerId}`);
             showStatus(`${data.message}`, 'error', connectionBox);
             showToast(`❌ Error from ${remotePeerId}: ${data.message}`);
             updateTransferStatus(transferTypes.receiving, remotePeerId, 'error');
@@ -210,7 +220,7 @@ function handleReceivedData(data, remotePeerId) {
                 const isLastFile = connData.receivingData.currentFile === connData.receivingData.totalFiles;
                 if (isLastFile) {
                     updateTransferStatus(transferTypes.receiving, remotePeerId, 'complete');
-                    const connectionBox = document.querySelector(`[data-peer-id="${remotePeerId}"]`);
+                    const connectionBox = document.getElementById(`conn-${remotePeerId}`);
                     showStatus('All files received successfully', 'success', connectionBox);
                     enableRequestFilesBtn(remotePeerId);
                 }
