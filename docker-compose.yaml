@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  peerjs-server:
+    image: peerjs/peerjs-server:1.1.0-rc.2
+    container_name: peerjs-server
+    command: >
+      peerjs
+      --port 9000
+      --path /peerserver
+    expose:
+      - "9000"
+    restart: unless-stopped
+
+  nginx-frontend:
+    build: ./
+    container_name: nginx-smoothshare-client
+    ports:
+      - "8080:80"
+    depends_on:
+      - peerjs-server
+    restart: unless-stopped

@@ -36,19 +36,25 @@ const iceServers = [
     },
 ];
 
+// self-host config  
+const options = {
+        host: location.hostname,
+		port: location.port || 80,
+        path: '/peerserver',
+        debug: 2,
+        config: { 'iceServers': iceServers }
+    }; 
+
 // Main
 // Cleanup before page unload
 window.onbeforeunload = () => {
     connections.forEach(conn => conn.close());
     if (peer) peer.destroy();
-};
+};   
 
 // Peer Management
 function initPeer(profileId = null) {
-    peer = new Peer(profileId, {
-        debug: 2,
-        config: { 'iceServers': iceServers }
-    });
+    peer = new Peer(profileId, options);
 
     peer.on('open', (id) => {
         console.info('Connected to peerJS server');
@@ -74,6 +80,7 @@ function initPeer(profileId = null) {
         console.error('Peer was destroyed.');
         showToast('❗ Peer was destroyed. Try resetting your ID.');
         connections.clear();
+        myPeerIdDisplay.textContent = '';
         // initPeer();
     });
 
@@ -168,7 +175,7 @@ function handleReceivedData(data, remotePeerId) {
             let conn = connData.connection;
             // verify password
             if (data.password !== profilePassword) {
-                conn.send({ type: 'error', message: 'Invalid password. Access denied.' });
+                conn.send({ type: dataTypes.error, message: 'Invalid password. Access denied.' });
                 return;
             }
             // check if there are files available to share
@@ -185,9 +192,9 @@ function handleReceivedData(data, remotePeerId) {
             showStatus(`${data.message}`, 'error', connectionBox);
             showToast(`❌ Error from ${remotePeerId}: ${data.message}`);
             updateTransferStatus(transferTypes.receiving, remotePeerId, 'error');
-            setTimeout(() => {
-                removeTransferBox(transferTypes.receiving, remotePeerId);
-            }, 5000);
+            // setTimeout(() => {
+            //     removeTransferBox(transferTypes.receiving, remotePeerId);
+            // }, 5000);
             enableRequestFilesBtn(remotePeerId);
             break;
         // File Metadata
