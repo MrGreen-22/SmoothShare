@@ -1,4 +1,4 @@
-FROM nginx:1.28
+FROM docker.arvancloud.ir/nginx
 
 # Remove default config
 RUN rm /etc/nginx/conf.d/default.conf

@@ -36,11 +36,12 @@ const iceServers = [
     },
 ];
 
-// self-host config  
+// self-hosted peerServer config  
 const options = {
         host: location.hostname,
-		port: location.port || 80,
+		port: parseInt(location.port) || (location.protocol === 'https:'? 443 : 80),
         path: '/peerserver',
+        secure: location.protocol === 'https:',
         debug: 2,
         config: { 'iceServers': iceServers }
     }; 
