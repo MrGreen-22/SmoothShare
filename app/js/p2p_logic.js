@@ -37,21 +37,27 @@ const iceServers = [
 ];
 
 // self-hosted peerServer config  
+// const options = {
+//     host: location.hostname,
+//     port: parseInt(location.port) || (location.protocol === 'https:' ? 443 : 80),
+//     path: '/peerserver',
+//     secure: location.protocol === 'https:',
+//     debug: 2,
+//     config: { 'iceServers': iceServers }
+// };
+
+// default peerServer cloud config
 const options = {
-        host: location.hostname,
-		port: parseInt(location.port) || (location.protocol === 'https:'? 443 : 80),
-        path: '/peerserver',
-        secure: location.protocol === 'https:',
-        debug: 2,
-        config: { 'iceServers': iceServers }
-    }; 
+    debug: 2,
+    config: { 'iceServers': iceServers }
+}
 
 // Main
 // Cleanup before page unload
 window.onbeforeunload = () => {
     connections.forEach(conn => conn.close());
     if (peer) peer.destroy();
-};   
+};
 
 // Peer Management
 function initPeer(profileId = null) {
